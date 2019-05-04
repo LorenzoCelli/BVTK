@@ -70,6 +70,7 @@ class VTKColorMapper(Node, VTKNode):
     height = bpy.props.FloatProperty(default=5.5)
     max = bpy.props.FloatProperty(default=0)
     min = bpy.props.FloatProperty(default=0)
+    font = bpy.props.PointerProperty(type=bpy.types.VectorFont)
 
     def m_properties(self):
         return ['color_by', 'texture_type', 'auto_range',
@@ -116,6 +117,7 @@ class VTKColorMapper(Node, VTKNode):
                 layout.prop(self, 'texture_type')
                 if self.lut:
                     layout.prop(self, 'height', text='scalar bar height')
+                    layout.template_ID(self, "font", open="font.open", unlink="font.unlink")
                 layout.prop(self, 'color_by', text='color by')
                 layout.prop(self, 'auto_range', text='automatic range')
                 row = layout.row(align=True)

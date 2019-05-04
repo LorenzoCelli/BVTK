@@ -258,7 +258,7 @@ def vtkdata_to_blender(data, name, ramp=None, smooth=False):
         color_by = ramp.color_by
         Range = (ramp.min, ramp.max)
         if ramp.lut:
-            create_lut(name, Range, 6, texture, h=ramp.height)
+            create_lut(name, Range, 6, texture, font=ramp.font, h=ramp.height)
         bm.verts.index_update()
         bm.faces.index_update()
         if color_by[0] == 'P':
@@ -390,7 +390,7 @@ def delete_texts(name):
             bpy.data.curves.remove(curve)
 
 
-def create_lut(name, Range, n_div, texture, b=0.5, h=5.5, x=5, y=0, z=0, fontsize=0.35, roundto=2):
+def create_lut(name, Range, n_div, texture, font="", b=0.5, h=5.5, x=5, y=0, z=0, fontsize=0.35, roundto=2):
     """ method creates a lookuptable and adds it to current scene """
     name = name+'_colormap'
     delete_texts(name+'_lab')
@@ -409,7 +409,7 @@ def create_lut(name, Range, n_div, texture, b=0.5, h=5.5, x=5, y=0, z=0, fontsiz
     plane.faces[0].loops[3][uv_layer].uv = (1, 1)
     me, ob = mesh_and_object(name)
     plane.to_mesh(me)
-    ob.location = x,y,z
+    # ob.location = x,y,z
     texture_material(me, name, texture)
     min, max = Range
     if min>max or h<=0:
@@ -432,8 +432,9 @@ def create_lut(name, Range, n_div, texture, b=0.5, h=5.5, x=5, y=0, z=0, fontsiz
     starth = (h*(start-min))/delta
     steph = (h*step)/delta
     for i in range(int(math.floor((max-start)/step))+1):
-        t = text(name+'_lab'+str(i), '{:.15}'.format(start+i*step))
+        t = text(name+'_lab'+str(i), '{:.15}'.format(float(start+i*step)))
         t.data.size = fontsize
+        if font: t.data.font = font
         t.rotation_mode = 'XYZ'
         t.rotation_euler = (1.5707963705062866, 0.0, 0.0)
         t.location = b+b/5, 0, starth+steph*i
